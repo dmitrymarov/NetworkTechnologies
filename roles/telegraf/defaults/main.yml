@@ -1,0 +1,15 @@
+---
+
+telegraf_image: telegraf:latest
+telegraf_container_name: telegraf
+telegraf_config_host_path: /etc/telegraf/telegraf.conf
+telegraf_script_host_path: /home/orangepi/collect_temps.sh
+telegraf_script_container_path: /home/orangepi/collect_temps.sh
+mqtt_broker_host: 192.168.0.152
+mqtt_broker_port: 1883
+influxdb_host: 192.168.0.152
+influxdb_port: 8086
+influxdb_db_name: mqtt_data
+influxdb_user: mqtt_user
+influxdb_user_password: password
+telegraf_conf_template: telegraf.conf.j2

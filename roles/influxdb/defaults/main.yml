@@ -1,0 +1,8 @@
+---
+# Роль: influxdb
+influxdb_image: influxdb:1.8
+influxdb_container_name: influxdb
+influxdb_data_volume: influxdb
+influxdb_db_name: mqtt_data
+influxdb_user: mqtt_user
+influxdb_user_password: password

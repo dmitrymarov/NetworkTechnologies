@@ -1,0 +1,7 @@
+---
+
+mosquitto_config_path: /mosquitto/config
+mosquitto_data_path: /mosquitto/data
+mosquitto_image: eclipse-mosquitto:latest
+mosquitto_container_name: mosquitto
+mosquitto_conf_template: mosquitto.conf.j2

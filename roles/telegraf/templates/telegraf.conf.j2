@@ -1,0 +1,82 @@
+[agent]
+  interval = "10s"
+  round_interval = true
+  metric_buffer_limit = 10000
+  flush_buffer_when_full = true
+  collection_jitter = "0s"
+  flush_jitter = "0s"
+  precision = ""
+  debug = false
+  quiet = false
+
+[[outputs.influxdb]]
+  urls = ["http://{{ influxdb_host }}:{{ influxdb_port }}"]
+  database = "{{ influxdb_db_name }}"
+  username = "{{ influxdb_user }}"
+  password = "{{ influxdb_user_password }}"
+
+[[inputs.exec]]
+  ## Команды для выполнения
+  commands = ["/home/orangepi/collect_temps.sh"]
+  ## Таймаут выполнения команды
+  timeout = "5s"
+  ## Формат данных
+  data_format = "influx"
+  ## Суффикс для имени измерения
+  name_suffix = "_temperature"
+
+[[inputs.mqtt_consumer]]
+  ## MQTT брокер
+  servers = ["tcp://{{ mqtt_broker_host }}:{{ mqtt_broker_port }}"]
+
+  ## Топик для PPM
+  topics = ["sensors/mq135/ppm"]
+  qos = 0
+  connection_timeout = "30s"
+  client_id = "telegraf_mqtt_consumer_ppm"
+  data_format = "value"
+  data_type = "float"
+  name_override = "mq135_ppm"
+  tagexclude = []
+
+[[inputs.mqtt_consumer]]
+  ## MQTT брокер
+  servers = ["tcp://{{ mqtt_broker_host }}:{{ mqtt_broker_port }}"]
+
+  ## Топик для скорректированного PPM
+  topics = ["sensors/mq135/corr_ppm"]
+  qos = 0
+  connection_timeout = "30s"
+  client_id = "telegraf_mqtt_consumer_corr_ppm"
+  data_format = "value"
+  data_type = "float"
+  name_override = "mq135_corr_ppm"
+  tagexclude = []
+
+[[inputs.mqtt_consumer]]
+  ## MQTT брокер
+  servers = ["tcp://{{ mqtt_broker_host }}:{{ mqtt_broker_port }}"]
+
+  ## Топик для сырых значений ADC
+  topics = ["sensors/mq135/raw_adc"]
+  qos = 0
+  connection_timeout = "30s"
+  client_id = "telegraf_mqtt_consumer_raw_adc"
+  data_format = "value"
+  data_type = "float"
+  name_override = "mq135_raw_adc"
+  tagexclude = [] 
+
+[[inputs.mqtt_consumer]]
+  ## MQTT брокер
+  servers = ["tcp://{{ mqtt_broker_host }}:{{ mqtt_broker_port }}"]
+
+  ## Топик для ультразвукового датчика
+  topics = ["sensors/ultrasonic/distance"]
+  qos = 0
+  connection_timeout = "30s"
+  client_id = "telegraf_mqtt_consumer_distance"
+  data_format = "value"
+  data_type = "float"
+  name_override = "ultrasonic_distance"
+  tagexclude = []

@@ -1,0 +1,41 @@
+---
+- name: Ensure Mosquitto configuration directory exists
+  ansible.builtin.file:
+    path: "{{ mosquitto_config_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Ensure Mosquitto data directory exists
+  ansible.builtin.file:
+    path: "{{ mosquitto_data_path }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Deploy mosquitto.conf
+  ansible.builtin.template:
+    src: "{{ mosquitto_conf_template }}"
+    dest: "{{ mosquitto_config_path }}/mosquitto.conf"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run Mosquitto container
+  community.docker.docker_container:
+    name: "{{ mosquitto_container_name }}"
+    image: "{{ mosquitto_image }}"
+    restart_policy: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - "{{ mosquitto_config_path }}:/mosquitto/config"
+      - "{{ mosquitto_data_path }}:/mosquitto/data"
+    state: started
+    networks:
+      - name: monitoring_external
+      - name: monitoring
+      - name: monitoring_internal

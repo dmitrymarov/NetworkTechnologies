@@ -1,0 +1,27 @@
+---
+- name: Ensure directory for Telegraf config exists
+  ansible.builtin.file:
+    path: "{{ telegraf_config_host_path | dirname }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Deploy Telegraf configuration
+  ansible.builtin.template:
+    src: "{{ telegraf_conf_template }}"
+    dest: "{{ telegraf_config_host_path }}"
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run Telegraf container
+  community.docker.docker_container:
+    name: "{{ telegraf_container_name }}"
+    image: "{{ telegraf_image }}"
+    restart_policy: always
+    network_mode: host
+    volumes:
+      - "{{ telegraf_config_host_path }}:/etc/telegraf/telegraf.conf:ro"
+      - "{{ telegraf_script_host_path }}:{{ telegraf_script_container_path }}:ro"
+    state: started

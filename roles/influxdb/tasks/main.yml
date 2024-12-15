@@ -1,0 +1,27 @@
+---
+- name: Run InfluxDB container
+  community.docker.docker_container:
+    name: "{{ influxdb_container_name }}"
+    image: "{{ influxdb_image }}"
+    restart_policy: always
+    ports:
+      - "8086:8086"
+    volumes:
+      - "{{ influxdb_data_volume }}:/var/lib/influxdb"
+    state: started
+    networks:
+      - name: monitoring_external
+      - name: monitoring
+      - name: monitoring_internal
+
+- name: Wait for InfluxDB port to be open
+  ansible.builtin.wait_for:
+    host: localhost
+    port: 8086
+    delay: 5
+    timeout: 60
+
+- name: Create InfluxDB database
+  command: >
+    docker exec {{ influxdb_container_name }}
+    influx -execute "CREATE DATABASE {{ influxdb_db_name }}; CREATE USER {{ influxdb_user }} WITH PASSWORD '{{ influxdb_user_password }}'; GRANT ALL ON {{ influxdb_db_name }} TO {{ influxdb_user }}"
