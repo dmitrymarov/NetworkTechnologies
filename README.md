@@ -1,4 +1,5 @@
 # NetworkTechnologies
+```
 Структура проекта
 mqtt-monitoring/
 ├── inv.yaml
@@ -45,4 +46,4 @@ mqtt-monitoring/
 │       │   └── main.yml
 │       └── templates/
 │           └── telegraf.conf.j2
-
+```
